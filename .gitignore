@@ -1,1 +1,4 @@
 /target
+/out
+/resources/public/js/
+figwheel_server.log
