@@ -122,7 +122,7 @@
                    :symbol "square"
                    :size 6
                    :style {:data {:stroke "red" :strokeWidth 4}}}]]])
-   [:h4 {:style {:color "#f00"}} "Creating New Components (doesn't work)"]
+   [:h4 "Creating New Components"]
    [v/chart
     [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
                 :samples 25
