@@ -126,7 +126,7 @@
    [v/chart
     [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
                 :samples 25
-                :dataComponent (r/create-element "div" nil (r/as-element [:div "λ"]))}]]])
+                :dataComponent (r/as-element [:text "λ"])}]]])
 
 (defn main-component []
   [:div {:style {:text-align "center"}}
