@@ -121,7 +121,12 @@
                    :samples 15
                    :symbol "square"
                    :size 6
-                   :style {:data {:stroke "red" :strokeWidth 4}}}]]])])
+                   :style {:data {:stroke "red" :strokeWidth 4}}}]]])
+   [:h4 {:style {:color "#f00"}} "Creating New Components (doesn't work)"]
+   [v/chart
+    [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
+                :samples 25
+                :dataComponent (r/create-element "div" nil (r/as-element [:div "λ"]))}]]])
 
 (defn main-component []
   [:div {:style {:text-align "center"}}
