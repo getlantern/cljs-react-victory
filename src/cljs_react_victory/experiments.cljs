@@ -9,8 +9,6 @@
 
 (enable-console-print!)
 
-(println "Hello Clojure!")
-
 (def data [{:quarter 1 :earnings 13000}
            {:quarter 2 :earnings 16500}
            {:quarter 3 :earnings 14250}
@@ -24,9 +22,6 @@
 (def data-error [{:x 15 :y 35000 :error 0.2}
                  {:x 20 :y 42000 :error 0.05}
                  {:x 30 :y 55000 :error 0.1}])
-
-
-(js/console.log data)
 
 (defn bars-component []
   [:div
@@ -74,28 +69,66 @@
                   :errorX #(* (:error %) (:x %))
                   :errorY #(* (:error %) (:y %))}]]])
 
-(defn scatter-component []
+(defn animations-component []
   (let [generate-data (fn []
                         (take 20 (repeatedly (fn [] {:x (rand-int 10)
                                                      :y (rand-int 20)
                                                      :size (rand-int 20)}))))
-        scatter-data (r/atom (generate-data))
-]
+        scatter-data (r/atom (generate-data))]
     (js/setTimeout #(reset! scatter-data (generate-data)) 4000)
     (fn []
       [:div
-       [:h2 "Scatter Data"]
+       [:h2 "Animations"]
        [:h4 "Scatter Data (ANIMATED)"]
        [v/chart {:theme v/material-theme
                  :animate {:duration 1000
                            :easing "circleOut"}}
         [v/scatter {:data @scatter-data}]]])))
 
+(defn custom-components []
+  [:div
+   [:h2 "Custom Components"]
+   [:h4 "Alter Defaults"]
+   [v/bar {:data (map merge data [{:label "Athena"}
+                                  {:label "Sparta"}
+                                  {:label "Ephesus"}
+                                  {:label "Lesbos"}])
+           :x :quarter
+           :y :earnings
+           :labelComponent (r/as-element
+                            [v/label {:angle 45
+                                      :verticalAnchor "end"
+                                      :textAnchor "middle"}])}]
+   [:h4 "Wrapping Components"]
+   (let [wrapper (r/create-class
+                  {:render (fn [this]
+                             (r/as-element
+                              (into
+                               [:g {:transform "translate(20,40)"}
+                                (r/as-element [v/label {:text "add labels"
+                                                        :x 110
+                                                        :y 30}])
+                                (r/as-element [v/label {:text "offset data from axes"
+                                                        :x 70
+                                                        :y 150}])
+                                (r/as-element [v/label {:text "alter props"
+                                                        :x 280
+                                                        :y 150}])]
+                               (r/children this))))})]
+     [v/chart
+      [wrapper
+       [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
+                   :samples 15
+                   :symbol "square"
+                   :size 6
+                   :style {:data {:stroke "red" :strokeWidth 4}}}]]])])
+
 (defn main-component []
   [:div {:style {:text-align "center"}}
    [:div {:style {:width "500px" :margin "auto"}}
     (bars-component)
     (error-bars-component)
-    ((scatter-component))]])
+    ;((animations-component))
+    (custom-components)]])
 
 (r/render-component [main-component] (js/document.getElementById "app"))

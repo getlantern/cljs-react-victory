@@ -1,8 +1,10 @@
 (ns cljs-react-victory.reagent
   (:require [cljsjs.victory]
-            [reagent.core :as r]
-            [camel-snake-kebab.core :as cs :include-macros true]))
+            [reagent.core :as r]))
 
+(def animation (r/adapt-react-class js/Victory.VictoryAnimation))
+(def clip-container (r/adapt-react-class js/Victory.VictoryClipContainer))
+(def container (r/adapt-react-class js/Victory.VictoryContainer))
 (def area (r/adapt-react-class js/Victory.VictoryArea))
 (def axis (r/adapt-react-class js/Victory.VictoryAxis))
 (def bar (r/adapt-react-class js/Victory.VictoryBar))
@@ -10,10 +12,16 @@
 (def chart (r/adapt-react-class js/Victory.VictoryChart))
 (def error-bar (r/adapt-react-class js/Victory.VictoryErrorBar))
 (def group (r/adapt-react-class js/Victory.VictoryGroup))
+(def label (r/adapt-react-class js/Victory.VictoryLabel))
 (def line (r/adapt-react-class js/Victory.VictoryLine))
 (def pie (r/adapt-react-class js/Victory.VictoryPie))
+(def portal (r/adapt-react-class js/Victory.VictoryPortal))
 (def scatter (r/adapt-react-class js/Victory.VictoryScatter))
+(def shared-events (r/adapt-react-class js/Victory.VictorySharedEvents))
 (def stack (r/adapt-react-class js/Victory.VictoryStack))
+(def theme (r/adapt-react-class js/Victory.VictoryTheme))
+(def tooltip (r/adapt-react-class js/Victory.VictoryTooltip))
+(def transition (r/adapt-react-class js/Victory.VictoryTransition))
 (def voronoi (r/adapt-react-class js/Victory.VictoryVoronoi))
 (def voronoi-tooltip (r/adapt-react-class js/Victory.VictoryVoronoiTooltip))
 (def zoom (r/adapt-react-class js/Victory.VictoryZoom))
