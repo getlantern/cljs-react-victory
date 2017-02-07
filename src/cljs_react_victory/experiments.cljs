@@ -123,10 +123,16 @@
                    :size 6
                    :style {:data {:stroke "red" :strokeWidth 4}}}]]])
    [:h4 "Creating New Components"]
-   [v/chart
-    [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
-                :samples 25
-                :dataComponent (r/as-element [:text "λ"])}]]
+   (let [custom-component (r/create-class
+                           {:render (fn [this]
+                                      (let [the-x (.-x (.-props this))
+                                            the-y (.-y (.-props this))]
+                                        [:g {:transform (str "translate(" the-x "," the-y ")")}
+                                         (r/as-element [:text "λ"])]))})]
+     [v/chart
+      [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
+                  :samples 25
+                  :dataComponent (r/as-element [custom-component])}]])
    [:h4 "Embedding components inside components"]
    (let [width 120
          data (mapv
@@ -168,7 +174,7 @@
    [:div {:style {:width "500px" :margin "auto"}}
     (bars-component)
     (error-bars-component)
-    ;((animations-component))
+    ((animations-component))
     (custom-components)]])
 
 (r/render-component [main-component] (js/document.getElementById "app"))
