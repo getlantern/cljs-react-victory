@@ -123,37 +123,45 @@
                    :size 6
                    :style {:data {:stroke "red" :strokeWidth 4}}}]]])
    [:h4 "Creating New Components"]
-   #_[v/chart
+   [v/chart
     [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
                 :samples 25
                 :dataComponent (r/as-element [:text "λ"])}]]
-   [:h4 "Creating New Components 2 (TODO)"]
-   (let [data (mapv
-               (fn [val] (merge val {:pie [{:x "Lions" :y (rand-int 10)}
-                                           {:x "Tigers" :y (rand-int 10)}
-                                           {:x "Bears" :y (rand-int 10)}]}))
+   [:h4 "Embedding components inside components"]
+   (let [width 120
+         data (mapv
+               (fn [val] (merge val {:pie [{:x "Lions" :y (+ 3 (rand-int 13))}
+                                           {:x "Tigers" :y (+ 3 (rand-int 13))}
+                                           {:x "Bears" :y (+ 3 (rand-int 13))}]}))
                [{:x "Jan" :y 30}
                 {:x "Feb" :y 32}
                 {:x "Mar" :y 65}
                 {:x "Apr" :y 38}
-                {:x "May" :y 50}])
+                {:x "May" :y 50}
+                {:x "Jun" :y 47}
+                {:x "Jul" :y 38}
+                {:x "Aug" :y 48}
+                {:x "Sep" :y 80}
+                {:x "Oct" :y 73}
+                {:x "Nov" :y 76}
+                {:x "Dec" :y 100}])
          custom-pie (r/create-class
                      {:render (fn [this]
-                                (r/as-element
-                                 (let [the-x (get-in (r/props this) [:data :x])
-                                       the-y (get-in (r/props this) [:data :y])]
-                                   (js/console.log (str (:pie (:data (r/props this)))))
-                                   [:g {:transform (str "translate(" the-x "," the-y ")")}
-                                    [v/pie {:standalone false
-                                            :height 120
-                                            :width 120
-                                            :data (:pie (:data (r/props this)))
-                                            :colorScale ["#f77" "#55e" "#8af"]}]])))})]
-     [v/chart {:domain {:y [0 100]}}
+                                ;; Getting the values inside the class requires us to access the properties manually
+                                (let [the-x (- (.-x (.-props this)) (/ width 2))
+                                      the-y (- (.-y (.-props this)) (/ width 2))]
+                                  [:g {:transform (str "translate(" the-x "," the-y ")")}
+                                   [v/pie {:standalone false
+                                           :height width
+                                           :width width
+                                           :data (.-pie (.-datum (.-props this)))
+                                           :style {:labels {:fontSize 0}}
+                                           :colorScale ["#f77" "#55e" "#8af"]}]]))})]
+     [v/chart {:domain #js{:y #js[0 100]}}
       [v/axis]
       [v/group {:data data}
        [v/line]
-       [v/scatter {:dataComponent (r/as-element [custom-pie {:data data}])}]]])])
+       [v/scatter {:dataComponent (r/as-element [custom-pie])}]]])])
 
 (defn main-component []
   [:div {:style {:text-align "center"}}
