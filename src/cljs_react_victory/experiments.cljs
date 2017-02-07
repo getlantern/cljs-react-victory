@@ -123,10 +123,37 @@
                    :size 6
                    :style {:data {:stroke "red" :strokeWidth 4}}}]]])
    [:h4 "Creating New Components"]
-   [v/chart
+   #_[v/chart
     [v/scatter {:y #(js/Math.sin (* 2 (.-PI js/Math) (.-x %)))
                 :samples 25
-                :dataComponent (r/as-element [:text "λ"])}]]])
+                :dataComponent (r/as-element [:text "λ"])}]]
+   [:h4 "Creating New Components 2 (TODO)"]
+   (let [data (mapv
+               (fn [val] (merge val {:pie [{:x "Lions" :y (rand-int 10)}
+                                           {:x "Tigers" :y (rand-int 10)}
+                                           {:x "Bears" :y (rand-int 10)}]}))
+               [{:x "Jan" :y 30}
+                {:x "Feb" :y 32}
+                {:x "Mar" :y 65}
+                {:x "Apr" :y 38}
+                {:x "May" :y 50}])
+         custom-pie (r/create-class
+                     {:render (fn [this]
+                                (r/as-element
+                                 (let [the-x (get-in (r/props this) [:data :x])
+                                       the-y (get-in (r/props this) [:data :y])]
+                                   (js/console.log (str (:pie (:data (r/props this)))))
+                                   [:g {:transform (str "translate(" the-x "," the-y ")")}
+                                    [v/pie {:standalone false
+                                            :height 120
+                                            :width 120
+                                            :data (:pie (:data (r/props this)))
+                                            :colorScale ["#f77" "#55e" "#8af"]}]])))})]
+     [v/chart {:domain {:y [0 100]}}
+      [v/axis]
+      [v/group {:data data}
+       [v/line]
+       [v/scatter {:dataComponent (r/as-element [custom-pie {:data data}])}]]])])
 
 (defn main-component []
   [:div {:style {:text-align "center"}}
